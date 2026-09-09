@@ -82,6 +82,8 @@ class MainApp:
 #     return f'username is {Username}\n username id is {Username_id}\n username role is {Username_role}'
 #     #return CrudHelper.channel_usercars(Username_id).sync_user()
 
+mainapp = MainApp
+app = MainApp.app
+
 if __name__ == '__main__':
-    mainapp = MainApp
-    mainapp.app.run(debug=True)
+    app.run(debug=True)
