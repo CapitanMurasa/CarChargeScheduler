@@ -20,7 +20,7 @@ def execute_query_with_retry(query, params=None):
         except sqlite3.OperationalError as e:
             if "database is locked" in str(e):
                 attempts += 1
-                time.sleep(0.1)  # Wait for a short duration before retrying
+                time.sleep(0.1)  
             else:
                 raise
     else:
@@ -42,7 +42,7 @@ def fetch_query_with_retry(query):
         except sqlite3.OperationalError as e:
             if "database is locked" in str(e):
                 attempts += 1
-                time.sleep(0.1)  # Wait for a short duration before retrying
+                time.sleep(0.1)  
             else:
                 raise
     else:

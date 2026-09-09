@@ -6,7 +6,6 @@ import common.service.CrudHelper as CrudHelper
 from common.service import UserService, ChannelService, UserCarService, StationService
 
 # changelog
-# this code have been rewritten (From now this file server as controller, the functions are in the scripts on service folder)
 
 
 
