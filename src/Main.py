@@ -21,7 +21,10 @@ from common.service import UserService, ChannelService, UserCarService, StationS
 
 class MainApp:
     app = Flask(__name__)
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
+    db_uri = os.getenv("SQLALCHEMY_DATABASE_URI")
+    if not db_uri:
+        raise RuntimeError("SQLALCHEMY_DATABASE_URI is not set!")
+    app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
     db.init_app(app)
     Username = ''
     Username_role = ''
