@@ -1,4 +1,5 @@
 from flask import render_template, Flask, request, redirect
+import os
 from common.model.Models import Users, Station, Channel, UserCar, ChannelUserCar, db
 from sqlalchemy.sql import text
 import common.service.CrudHelper as CrudHelper
@@ -11,16 +12,16 @@ from common.service import UserService, ChannelService, UserCarService, StationS
 
 
 # todo
-# sort non-occupied channels
-# some exceptions at Car_select
-# parrent station id sorting
+# migration to postgresql (for learning ci/cd purposes)
+# use flask's session function to store current user variable instead of loading it to global server variable
+# .env file
 
 # bootstrap
 
 
 class MainApp:
     app = Flask(__name__)
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///ccs.db"
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
     db.init_app(app)
     Username = ''
     Username_role = ''

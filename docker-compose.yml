@@ -1,6 +1,20 @@
 version: "3.8"
 
 services:
+  db:
+    image: postgres:16-alpine
+    container_name: ccs_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ccs_user
+      POSTGRES_PASSWORD: ccs_password
+      POSTGRES_DB: ccs_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./CSS-Tables.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
   web:
     build: .
     container_name: ccs_web
@@ -8,7 +22,10 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - SQLALCHEMY_DATABASE_URI=sqlite:///instance/ccs.db
+      - SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://ccs_user:ccs_password@db:5432/ccs_db
       - SECRET_KEY=dev-secret-key-change-in-prod
-    volumes:
-      - ./src/instance:/app/src/instance
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

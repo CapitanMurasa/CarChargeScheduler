@@ -1,5 +1,6 @@
 FROM python:3.12-slim
 
+
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
@@ -15,4 +16,4 @@ ENV PYTHONPATH=/app/src
 EXPOSE 5000
 
 WORKDIR /app/src
-CMD ["gunicorn", "-w", "1", "--threads", "4", "-b", "0.0.0.0:5000", "Main:app"]
+CMD ["gunicorn", "-w", "2", "-b", "0.0.0.0:5000", "Main:app"]
