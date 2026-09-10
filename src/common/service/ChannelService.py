@@ -6,7 +6,7 @@ from sqlalchemy import text
 class ChannelService:
     def __init__(self):
         self.Mainapp = Main.MainApp
-        self.exec_channel_non_occupied = text('SELECT * FROM channels WHERE occupancy = 0 ORDER BY id_station ASC')
+        self.exec_channel_non_occupied = text('SELECT * FROM channels WHERE occupancy = false ORDER BY id_station ASC')
     def order_station(self):
         exec_usercars_filtered = text(f'SELECT * FROM user_cars WHERE id_user = {self.Mainapp.Username_id}')
         if self.Mainapp.Username == '':
