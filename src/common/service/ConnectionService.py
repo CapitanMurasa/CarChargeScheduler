@@ -1,10 +1,12 @@
 import os
 from dotenv import load_dotenv
 
+load_dotenv()
+
 class ConnectionService:
 
     def __init__(self):
-        load_dotenv()
+        
 
     def HOST(self):
         HOST = os.getenv('HOST')

@@ -1,4 +1,5 @@
 from flask import render_template, Flask, request, redirect
+import os
 from common.model.Models import Users, Station, Channel, UserCar, ChannelUserCar, db
 from sqlalchemy.sql import text
 import common.service.CrudHelper as CrudHelper
@@ -6,22 +7,24 @@ import common.service.CrudHelper as CrudHelper
 from common.service import UserService, ChannelService, UserCarService, StationService
 
 # changelog
-# this code have been rewritten (From now this file server as controller, the functions are in the scripts on service folder)
 
 
 
 
 # todo
-# sort non-occupied channels
-# some exceptions at Car_select
-# parrent station id sorting
+# migration to postgresql (for learning ci/cd purposes)
+# use flask's session function to store current user variable instead of loading it to global server variable
+# .env file
 
 # bootstrap
 
 
 class MainApp:
     app = Flask(__name__)
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///ccs.db"
+    db_uri = os.getenv("SQLALCHEMY_DATABASE_URI")
+    if not db_uri:
+        raise RuntimeError("SQLALCHEMY_DATABASE_URI is not set!")
+    app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
     db.init_app(app)
     Username = ''
     Username_role = ''
@@ -83,6 +86,8 @@ class MainApp:
 #     return f'username is {Username}\n username id is {Username_id}\n username role is {Username_role}'
 #     #return CrudHelper.channel_usercars(Username_id).sync_user()
 
+mainapp = MainApp
+app = MainApp.app
+
 if __name__ == '__main__':
-    mainapp = MainApp
-    mainapp.app.run(debug=True)
+    app.run(debug=True)

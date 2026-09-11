@@ -1,59 +1,51 @@
-
-CREATE TABLE users(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT,
-    password TEXT,
-    role TEXT/*('user', 'admin')*/
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(150) NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    role VARCHAR(20) DEFAULT 'user' CHECK (role IN ('user', 'admin'))
 );
 
-CREATE TABLE user_cars(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    id_user INTEGER,
-    carname TEXT,
-    FOREIGN KEY(id_user) REFERENCES users(id)
+
+CREATE TABLE user_cars (
+    id SERIAL PRIMARY KEY,
+    id_user INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    carname TEXT NOT NULL
 );
 
-CREATE TABLE stations(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+CREATE TABLE stations (
+    id SERIAL PRIMARY KEY,
+    title TEXT NOT NULL,
+    addressname TEXT NOT NULL,
+    channels_per_station INTEGER DEFAULT 0
+);
+
+
+CREATE TABLE channels (
+    id SERIAL PRIMARY KEY,
+    id_station INTEGER NOT NULL REFERENCES stations(id) ON DELETE CASCADE,
     title TEXT,
-    addressname TEXT,
-    channels_per_station INTEGER
+    price NUMERIC(10, 2),
+    occupancy BOOLEAN DEFAULT FALSE,
+    occupiedby TEXT
 );
 
-CREATE TABLE "channels" (
-	"id"	INTEGER,
-	"id_station"	INTEGER,
-	"title"	TEXT,
-	"price"	REAL,
-	"occupancy"	INTEGER,
-	"occupiedby"	TEXT,
-	FOREIGN KEY("id_station") REFERENCES "stations"("id"),
-	PRIMARY KEY("id" AUTOINCREMENT)
+
+CREATE TABLE channel_usercars (
+    id SERIAL PRIMARY KEY,
+    id_channel INTEGER REFERENCES channels(id) ON DELETE SET NULL,
+    id_user INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    id_user_car INTEGER REFERENCES user_cars(id) ON DELETE SET NULL,
+    startcharge TIMESTAMP WITH TIME ZONE,
+    endcharge TIMESTAMP WITH TIME ZONE
 );
 
-CREATE TABLE channel_usercars(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    id_channel INTEGER, 
-    id_user INTEGER,
-    id_user_car INTEGER,
-    startcharge TEXT, /*("YYYY-MM-DD HH:MM:SS.SSS")*/
-    endcharge TEXT, /*("YYYY-MM-DD HH:MM:SS.SSS")*/
-    FOREIGN KEY (id_channel) REFERENCES channels(id),
-    FOREIGN KEY (id_user) REFERENCES users(id),
-    FOREIGN KEY (id_user_car) REFERENCES user_cars(id)
-);
 
-CREATE TABLE "reported_users_list" (
-	"id"	INTEGER,
-	"id_station"	INTEGER,
-	"station_address"	TEXT,
-	"id_channel"	INTEGER,
-	"id_user"	INTEGER,
-	"additional_tip"	TEXT,
-	FOREIGN KEY("id_user") REFERENCES "users"("id"),
-	PRIMARY KEY("id" AUTOINCREMENT),
-	FOREIGN KEY("id_channel") REFERENCES "channels"("id"),
-	FOREIGN KEY("station_address") REFERENCES "station"("addressname")
-	FOREIGN KEY("id_station") REFERENCES "station"("id")
+CREATE TABLE reported_users_list (
+    id SERIAL PRIMARY KEY,
+    id_station INTEGER REFERENCES stations(id) ON DELETE SET NULL,
+    station_address TEXT,
+    id_channel INTEGER REFERENCES channels(id) ON DELETE SET NULL,
+    id_user INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    additional_tip TEXT
 );
-

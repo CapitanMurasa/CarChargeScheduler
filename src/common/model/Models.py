@@ -4,7 +4,7 @@ db = SQLAlchemy()
 class Users(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=False, nullable=False)
+    username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(50), unique=False, nullable=False)
     role = db.Column(db.String(80), unique=False, nullable=False)
 
@@ -34,7 +34,7 @@ class Channel(db.Model):
     __tablename__ = 'channels'
     id = db.Column(db.Integer, primary_key=True)
     id_station = db.Column(db.Integer, db.ForeignKey('stations.id'), nullable=False)
-    occupancy = db.Column(db.Boolean, unique=False, nullable = False)
+    occupancy = db.Column(db.Boolean, unique=False, nullable=True)
     title = db.Column(db.String(120), unique=False, nullable=False)
     price = db.Column(db.String(120), unique=False, nullable=False)
     occupiedby = db.Column(db.String(120), unique=False, nullable=False)
