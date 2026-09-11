@@ -17,6 +17,8 @@ services:
 
   web:
     build: .
+    env_file:
+      - .env
     container_name: ccs_web
     restart: unless-stopped
     ports:

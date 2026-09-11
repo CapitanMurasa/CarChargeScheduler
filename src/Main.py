@@ -1,8 +1,8 @@
 from flask import render_template, Flask, request, redirect
 import os
-from common.model.Models import Users, Station, Channel, UserCar, ChannelUserCar, db
 from sqlalchemy.sql import text
 import common.service.CrudHelper as CrudHelper
+from common.model.Models import Users, Station, Channel, UserCar, ChannelUserCar, db
 # custom service modules
 from common.service import UserService, ChannelService, UserCarService, StationService
 
@@ -25,6 +25,7 @@ class MainApp:
     if not db_uri:
         raise RuntimeError("SQLALCHEMY_DATABASE_URI is not set!")
     app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
+    app.secret_key = os.getenv("SECRET_KEY")
     db.init_app(app)
     Username = ''
     Username_role = ''
