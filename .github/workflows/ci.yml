@@ -21,7 +21,7 @@ jobs:
         run: sleep 5 && docker compose ps
 
       - name: Run Pytest inside the web container
-        run: docker compose exec -T web pytest tests/
+        run: docker compose exec -T web python -m pytest tests/
 
       - name: View logs on failure
         if: failure()
