@@ -1,13 +1,13 @@
 import Main
 from common.model.Models import db, Users, UserCar
-from flask import redirect, request, render_template
+from flask import redirect, request, render_template, session
 from sqlalchemy import text
 
 
 class UserCarService:
     def __init__(self):
         self.Mainapp = Main.MainApp
-        self.exec_usercars_individual = text(f'SELECT * FROM user_cars WHERE id_user = {self.Mainapp.Username_id}')
+        self.exec_usercars_individual = text(f'SELECT * FROM user_cars WHERE id_user = {session['user_id']}')
     def add_car(self):
         if self.Mainapp.Username == '':
             return redirect('/index')
@@ -17,7 +17,7 @@ class UserCarService:
                 match request.form['button']:
                     case 'add car':
                         car_name = request.form['car_name']
-                        add_car = UserCar(id_user = self.Mainapp.Username_id,
+                        add_car = UserCar(id_user = session['user_id'],
                                           carname = car_name)
                         if car_name == '':
                             return redirect('/user/add_car')
