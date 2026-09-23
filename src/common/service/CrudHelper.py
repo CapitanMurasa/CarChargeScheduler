@@ -15,9 +15,4 @@ def stationname_to_id(value):
 
             
 
-    
-#class sort_channel:
-#    def __init__(self):
-#        pass
-
 

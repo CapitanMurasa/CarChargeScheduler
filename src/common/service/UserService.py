@@ -1,7 +1,7 @@
 import Main
 import common.service.CrudHelper as Crudhelper
 from common.model.Models import db, Users, ReportedUsersList
-from flask import redirect, request, render_template
+from flask import redirect, request, render_template, session
 from sqlalchemy import text
 
 
@@ -58,8 +58,7 @@ class UserService:
                                    user_role=self.Mainapp.Username_id)
 
     def logout(self):
-        self.Mainapp.Username = ''
-        self.Mainapp.Username_role = ''
+        session.clear()
         return redirect('/index')
 
     def login(self):
@@ -73,13 +72,17 @@ class UserService:
             match request.form['button']:
                 case 'login':
                     try:
-                        if find_users.password == Password and find_users.role == 'user':
-                            return redirect('/index')
+                        if find_users.password == Password:
+                            session['user_id'] = find_users.id
+                            session['username'] = find_users.username
+                            session['role'] = find_users.role
+                            if find_users.role == 'user':
+                                return redirect('/index')
+                            elif find_users.role == 'admin':
+                                return redirect('/admin/index')
 
-                        elif find_users.password == Password and find_users.role == 'admin':
-                            return redirect('/admin/index')
                         else:
-                            return 'wrong password or access denied...'
+                            return 'wrong password...'
 
 
 
@@ -107,8 +110,9 @@ class UserService:
         else:
             return render_template('admin_login.html')
 
+
     def report_page(self):
-        if self.Mainapp.Username == '' or self.Mainapp.Username_role != 'admin':
+        if session.get('username') is None or session.get('role') != 'admin':
             return redirect('/index')
         else:
             Station_list_id = db.session.execute(self.exec_station_id)
