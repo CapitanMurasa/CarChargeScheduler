@@ -30,8 +30,8 @@ class UserService:
                     case _:
                         pass
         else:
-            return render_template('user_index.html', username=self.Mainapp.Username,
-                                    Username_role=self.Mainapp.Username_role)
+            return render_template('user_index.html', str(username=session['username']),
+                                    str(Username_role=session['role']))
 
 
     def admin_index(self):
@@ -54,8 +54,8 @@ class UserService:
                     case _:
                         pass
         else:
-            return render_template('admin_index.html', username=self.Mainapp.Username,
-                                   user_role=self.Mainapp.Username_id)
+            return render_template('admin_index.html', username=str(session['username']),
+                                   user_role=str(session['role']))
 
     def logout(self):
         session.clear()
@@ -63,12 +63,12 @@ class UserService:
 
     def login(self):
         if request.method == 'POST':
-            self.Mainapp.Username = request.form['Username']
+            Username = request.form['Username']
             Password = request.form['Password']
-            find_users = Users.query.filter_by(username=self.Mainapp.Username).first()
+            find_users = Users.query.filter_by(username=Username).first()
             if find_users is not None:
                 self.Mainapp.Username_role = find_users.role
-            self.Mainapp.Username_id = Crudhelper.username_to_id(self.Mainapp.Username)
+            # self.Mainapp.Username_id = Crudhelper.username_to_id(self.Mainapp.Username)
             match request.form['button']:
                 case 'login':
                     try:
@@ -95,12 +95,12 @@ class UserService:
                 case 'register':
                     users = db.session.execute(self.exec_user)
                     for i in users:
-                        if i[1] == self.Mainapp.Username:
+                        if i[1] == Username:
                             return f'username {i[1]} exists!'
-                    if self.Mainapp.Username and Password == '':
+                    if Username and Password == '':
                         return redirect('/login')
                     else:
-                        add_user = Users(username=self.Mainapp.Username,
+                        add_user = Users(username=Username,
                                              password=Password,
                                              role='user')
                         db.session.add(add_user)
@@ -146,7 +146,7 @@ class UserService:
                                     channel_list = channel_list,
                                     user_list = user_list)
     def reported_users(self):
-        if self.Mainapp.Username == '' or self.Mainapp.Username_role != 'admin':
+        if session['username'] == '' or session['role'] != 'admin':
             return redirect('/index')
         else:
             ReportedUserslist = db.session.execute(self.exec_reported_user_list)

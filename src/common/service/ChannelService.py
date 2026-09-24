@@ -1,6 +1,6 @@
 import Main
 from common.model.Models import db, Users, Channel, ChannelUserCar
-from flask import redirect, request, render_template
+from flask import redirect, request, render_template, session
 from sqlalchemy import text
 
 class ChannelService:
@@ -8,12 +8,12 @@ class ChannelService:
         self.Mainapp = Main.MainApp
         self.exec_channel_non_occupied = text('SELECT * FROM channels WHERE occupancy = false ORDER BY id_station ASC')
     def order_station(self):
-        exec_usercars_filtered = text(f'SELECT * FROM user_cars WHERE id_user = {self.Mainapp.Username_id}')
-        if self.Mainapp.Username == '':
+        exec_usercars_filtered = text('SELECT * FROM user_cars WHERE id_user = :user_id')
+        if session['username'] == '':
             return redirect('/index')
         else:
             channel_list = db.session.execute(self.exec_channel_non_occupied)
-            car_list = db.session.execute(exec_usercars_filtered)
+            car_list = db.session.execute(exec_usercars_filtered, {'user_id': session['user_id']})
             if request.method == 'POST':
                 match request.form['button']:
                     case 'Order a station':
@@ -23,21 +23,21 @@ class ChannelService:
                         getcar = request.form['Car_selection']
                         for i in markers:
                             channel = Channel.query.filter_by(id=i).first()
-                            channel_usercars = ChannelUserCar.query.filter_by(id_channel=i, id_user=self.Mainapp.Username_id).first()
+                            channel_usercars = ChannelUserCar.query.filter_by(id_channel=i, id_user=session['user_id']).first()
                             if channel.occupiedby is None:
                                 if (channel_usercars is None or channel_usercars.id_channel is None or
                                         channel_usercars.id_user_car is None):
                                     add_to_channel_user_car = ChannelUserCar (id_channel = i,
-                                                                            id_user = self.Mainapp.Username_id,
+                                                                            id_user = session['user_id'],
                                                                             id_user_car = getcar)
                                     db.session.add(add_to_channel_user_car)
                                 else:
                                     channel_usercars.id_user_car = int(getcar)
                                 channel.occupancy = True
-                                channel.occupiedby = self.Mainapp.Username
+                                channel.occupiedby = session['username']
                                 db.session.commit()
 
-                            elif channel.occupiedby != self.Mainapp.Username:
+                            elif channel.occupiedby != session['username']:
                                 return 'this channel was occupied by someone else! Choose other channel!'
 
                             else:
@@ -50,8 +50,8 @@ class ChannelService:
                         markers = request.form.getlist("table")
                         for i in markers:
                             channel = Channel.query.filter_by(id=i).first()
-                            if channel.occupiedby == self.Mainapp.Username:
-                                ChannelUserCar.query.filter_by(id_channel=i, id_user=self.Mainapp.Username_id).delete()
+                            if channel.occupiedby == session['username']:
+                                ChannelUserCar.query.filter_by(id_channel=i, id_user=session['user_id']).delete()
                                 channel.occupancy = False
                                 channel.occupiedby = None
                                 db.session.commit()
@@ -60,21 +60,21 @@ class ChannelService:
 
                         return redirect('/user/order_station')
                     case 'show occupied channels by you':
-                        filter_occupied_ch = text(f"SELECT * FROM channels WHERE occupiedby = '{self.Mainapp.Username}'")
+                        filter_occupied_ch = text(f"SELECT * FROM channels WHERE occupiedby = '{session['username']}'")
                         filter_occupied_channels_by_user = db.session.execute(filter_occupied_ch)
                         return render_template('user_order_stations_show_occupied_stations.html',
                                                channel=channel_list,
                                                channel_filtered=filter_occupied_channels_by_user,
-                                               username=self.Mainapp.Username,
+                                               username=session['username'],
                                                car_list=car_list)
                     case _:
                         return str(request.form['button'])
             else:
                 return render_template('user_order_station.html', channel=channel_list,
-                                       username=self.Mainapp.Username, car_list=car_list)
+                                       username=session['username'], car_list=car_list)
 
     def channel_managment(self):
-        if self.Mainapp.Username == '' or self.Mainapp.Username_role != 'admin':
+        if session['username'] == '' or session['role'] != 'admin':
             return redirect('/index')
         else:
             channel_list = db.session.execute(self.exec_channel_non_occupied)
@@ -112,6 +112,6 @@ class ChannelService:
                         return str(request.form['button'])
             else:
                 return render_template('admin_channel_managment.html', channels=channel_list
-                                       , username=self.Mainapp.Username) #channel_station_name=channel_station_name)
+                                       , username=session['username']) #channel_station_name=channel_station_name)
 
 
