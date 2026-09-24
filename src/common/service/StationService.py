@@ -9,7 +9,7 @@ class StationService:
         self.Mainapp = Main.MainApp
 
     def station_managment(self):
-        if session['username'] == '' or session['role'] != 'admin':
+        if session.get('username') == '' or session.get('role') != 'admin':
             return redirect('/index')
         else:
             Station_list = db.session.execute(self.exec_station)
@@ -38,4 +38,4 @@ class StationService:
                         return str(request.form['button'])
             else:
                 return render_template('admin_station_managment.html', stations=Station_list,
-                                       username=session['username'])
+                                       username=session.get('username', ''))

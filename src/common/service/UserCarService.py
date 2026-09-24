@@ -9,15 +9,15 @@ class UserCarService:
         self.Mainapp = Main.MainApp
         self.exec_usercars_individual = text('SELECT * FROM user_cars WHERE id_user = :user_id')
     def add_car(self):
-        if session['username'] == '':
+        if session.get('username') == '':
             return redirect('/index')
         else:
-            channel_usercars_list = db.session.execute(self.exec_usercars_individual, {'user_id': session['user_id']})
+            channel_usercars_list = db.session.execute(self.exec_usercars_individual, {'user_id': session.get('user_id')})
             if request.method == 'POST':
                 match request.form['button']:
                     case 'add car':
                         car_name = request.form['car_name']
-                        add_car = UserCar(id_user = session['user_id'],
+                        add_car = UserCar(id_user = session.get('user_id'),
                                           carname = car_name)
                         if car_name == '':
                             return redirect('/user/add_car')
