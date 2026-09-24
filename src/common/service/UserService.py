@@ -30,8 +30,8 @@ class UserService:
                     case _:
                         pass
         else:
-            return render_template('user_index.html', username=str(session['username']),
-                                    Username_role=str(session['role']))
+            return render_template('user_index.html', username=session.get('username', ''),
+                                    Username_role=session.get('role', ''))
 
 
     def admin_index(self):
@@ -54,8 +54,8 @@ class UserService:
                     case _:
                         pass
         else:
-            return render_template('admin_index.html', username=str(session['username']),
-                                   user_role=str(session['role']))
+            return render_template('admin_index.html', username=session.get('username', ''),
+                                   user_role=session.get('role'))
 
     def logout(self):
         session.clear()

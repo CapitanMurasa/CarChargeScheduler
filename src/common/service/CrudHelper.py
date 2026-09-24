@@ -13,6 +13,3 @@ def stationname_to_id(value):
     return station.id if station else None
 
 
-            
-
-
