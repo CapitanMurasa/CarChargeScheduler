@@ -24,6 +24,7 @@ class MainApp:
     if not db_uri:
         raise RuntimeError("SQLALCHEMY_DATABASE_URI is not set!")
     app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
+    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
     db.init_app(app)
 
     @app.route('/login', methods = ['POST', 'GET'])

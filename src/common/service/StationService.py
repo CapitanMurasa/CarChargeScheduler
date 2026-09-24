@@ -1,6 +1,6 @@
 import Main
 from common.model.Models import db, Station
-from flask import redirect, request, render_template
+from flask import redirect, request, render_template, session
 from sqlalchemy import text
 
 class StationService:
@@ -9,7 +9,7 @@ class StationService:
         self.Mainapp = Main.MainApp
 
     def station_managment(self):
-        if self.Mainapp.Username == '' or self.Mainapp.Username_role != 'admin':
+        if session['username'] == '' or session['role'] != 'admin':
             return redirect('/index')
         else:
             Station_list = db.session.execute(self.exec_station)
@@ -38,4 +38,4 @@ class StationService:
                         return str(request.form['button'])
             else:
                 return render_template('admin_station_managment.html', stations=Station_list,
-                                       username=self.Mainapp.Username)
+                                       username=session['username'])
