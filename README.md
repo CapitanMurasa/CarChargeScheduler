@@ -1,3 +1,3 @@
 # CarChargeScheduler
-[![Build Status](https://github.com/CapitanMurasa/CarChargeSchedule/actions/workflows/main.yml/badge.svg)](https://github.com/CapitanMurasa/CarChargeSchedule/actions)<br>
+[![Flask Postgres CI](https://github.com/CapitanMurasa/CarChargeScheduler/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/CapitanMurasa/CarChargeScheduler/actions/workflows/ci.yml))<br>
 ## My first pet project on python using flask!<br>
