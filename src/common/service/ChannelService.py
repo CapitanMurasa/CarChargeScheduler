@@ -6,18 +6,18 @@ from sqlalchemy import text
 class ChannelService:
     def __init__(self):
         self.Mainapp = Main.MainApp
-        self.exec_channel_non_occupied = text('SELECT * FROM channels WHERE occupancy = false ORDER BY id_station ASC')
+        #self.exec_channel_non_occupied = text('SELECT * FROM channels WHERE occupancy = false ORDER BY id_station ASC')
     def order_station(self):
         exec_usercars_filtered = text('SELECT * FROM user_cars WHERE id_user = :user_id')
         if session['username'] == '':
             return redirect('/index')
         else:
-            channel_list = db.session.execute(self.exec_channel_non_occupied)
+            channel_list = Channel.query.filter_by(occupancy=False).order_by(Channel.id_station.asc()).all()
             car_list = db.session.execute(exec_usercars_filtered, {'user_id': session['user_id']})
             if request.method == 'POST':
                 match request.form['button']:
                     case 'Order a station':
-                        channel_list.close()
+                        #channel_list.close()
                         car_list.close()
                         markers = request.form.getlist("table")
                         getcar = request.form['Car_selection']
@@ -40,9 +40,6 @@ class ChannelService:
                             elif channel.occupiedby != session['username']:
                                 return 'this channel was occupied by someone else! Choose other channel!'
 
-                            else:
-                                channel_list.close()
-
                         return redirect('/user/order_station')
                     case 'Release a station':
                         channel_list.close()
@@ -60,8 +57,8 @@ class ChannelService:
 
                         return redirect('/user/order_station')
                     case 'show occupied channels by you':
-                        filter_occupied_ch = text(f"SELECT * FROM channels WHERE occupiedby = '{session['username']}'")
-                        filter_occupied_channels_by_user = db.session.execute(filter_occupied_ch)
+                        filter_occupied_ch = text("SELECT * FROM channels WHERE occupiedby = :username")
+                        filter_occupied_channels_by_user = db.session.execute(filter_occupied_ch, {'username': session['username']})
                         return render_template('user_order_stations_show_occupied_stations.html',
                                                channel=channel_list,
                                                channel_filtered=filter_occupied_channels_by_user,
@@ -77,26 +74,25 @@ class ChannelService:
         if session['username'] == '' or session['role'] != 'admin':
             return redirect('/index')
         else:
-            channel_list = db.session.execute(self.exec_channel_non_occupied)
+            channel_list = Channel.query.order_by(Channel.id_station.asc()).all()
             if request.method == 'POST':
                 match request.form['button']:
                     case 'remove selected rows':
                         markers = request.form.getlist("table")
                         for i in markers:
                             Channel.query.filter_by(id=i).delete()
-                            db.session.commit()
+                        db.session.commit()
                         return redirect('/admin/channel_managment')
                     case 'submit changes':
                         channel_parrent_station = request.form['channel_parrent_station']
                         channel_title = request.form['channel_title']
                         channel_price = request.form['channel_price']
-                        #try:
-                        add_station = Channel(id_station = channel_parrent_station,
-                                            title = channel_title,
-                                            price = channel_price)
-                        if channel_parrent_station and channel_title and channel_price == '':
+                        if channel_parrent_station == '' or channel_title == '' or channel_price == '':
                             return redirect('/admin/channel_managment')
                         else:
+                            add_station = Channel(id_station = channel_parrent_station,
+                                            title = channel_title,
+                                            price = channel_price)
                             db.session.add(add_station)
                             db.session.commit()
                             return redirect('/admin/channel_managment')

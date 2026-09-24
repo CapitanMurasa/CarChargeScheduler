@@ -30,8 +30,8 @@ class UserService:
                     case _:
                         pass
         else:
-            return render_template('user_index.html', str(username=session['username']),
-                                    str(Username_role=session['role']))
+            return render_template('user_index.html', username=str(session['username']),
+                                    Username_role=str(session['role']))
 
 
     def admin_index(self):
