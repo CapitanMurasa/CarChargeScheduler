@@ -1,17 +1,13 @@
 import Main
 import common.service.CrudHelper as Crudhelper
-from common.model.Models import db, Users, ReportedUsersList
+from common.model.Models import db, Users, Station , Channel , ChannelUserCar ,ReportedUsersList
 from flask import redirect, request, render_template, session
+from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import text
 
 
 class UserService:
     def __init__(self):
-        self.exec_user = text('SELECT * FROM users')
-        self.exec_station_id = text('SELECT id FROM stations')
-        self.exec_station_address = text('SELECT addressname FROM stations')
-        self.exec_channel = text('SELECT * FROM channels')
-        self.exec_reported_user_list = text('SELECT * FROM reported_users_list')
         self.Mainapp = Main.MainApp
 
     def index(self):
@@ -68,11 +64,10 @@ class UserService:
             find_users = Users.query.filter_by(username=Username).first()
             if find_users is not None:
                 self.Mainapp.Username_role = find_users.role
-            # self.Mainapp.Username_id = Crudhelper.username_to_id(self.Mainapp.Username)
             match request.form['button']:
                 case 'login':
                     try:
-                        if find_users.password == Password:
+                        if check_password_hash(find_users.password, Password):
                             session['user_id'] = find_users.id
                             session['username'] = find_users.username
                             session['role'] = find_users.role
@@ -93,15 +88,15 @@ class UserService:
                     except Exception as e:
                         return str(e)
                 case 'register':
-                    users = db.session.execute(self.exec_user)
-                    for i in users:
-                        if i[1] == Username:
-                            return f'username {i[1]} exists!'
-                    if Username and Password == '':
+                    users = Users.query.filter_by(username=Username).first()
+                    if users:
+                        return f'username {Username} exists!'
+                    if Username  == '' and Password == '':
                         return redirect('/login')
                     else:
+                        password_hash = generate_password_hash(Password)
                         add_user = Users(username=Username,
-                                             password=Password,
+                                             password=password_hash,
                                              role='user')
                         db.session.add(add_user)
                         db.session.commit()
@@ -115,24 +110,23 @@ class UserService:
         if session.get('username') is None or session.get('role') != 'admin':
             return redirect('/index')
         else:
-            Station_list_id = db.session.execute(self.exec_station_id)
-            Station_list_address = db.session.execute(self.exec_station_address)
-            channel_list = db.session.execute(self.exec_channel)
-            user_list = db.session.execute(self.exec_user)
+            Station_list_id = Station.query.with_entities(Station.id).all()
+            Station_list_address = Station.query.with_entities(Station.addressname).all()
+            channel_list = Channel.query.all()
+            user_list = Users.query.all()
             if request.method == 'POST':
                 if request.form['button'] == 'report':
                     station_name = request.form['station_name_select']
                     station_location = request.form['station_location_select']
-                    channel_id = request.form['channel_title_select']
-                    Username = request.form['User_select']
+                    channel_id = Crudhelper.channelname_to_id(request.form['channel_title_select'])
+                    user_id = Crudhelper.username_to_id(request.form['User_select'])
                     additional_tip = request.form['textfeild']
-                    Username_id_selected = Crudhelper.username_to_id(Username)
 
                     report = ReportedUsersList(
                         id_station = station_name,
                         station_address = station_location,
                         id_channel = channel_id,
-                        id_user = Username_id_selected,
+                        id_user = user_id,
                         additional_tip = additional_tip
                     )
 
@@ -149,7 +143,7 @@ class UserService:
         if session['username'] == '' or session['role'] != 'admin':
             return redirect('/index')
         else:
-            ReportedUserslist = db.session.execute(self.exec_reported_user_list)
+            reportedUserslist = ReportedUsersList.query.all()
             if request.method == 'POST':
                 if request.form['button'] == 'remove':
                     markers = request.form.getlist("table")
@@ -158,4 +152,4 @@ class UserService:
                         db.session.commit()
                     return redirect('/admin/reported_users')
 
-            return render_template('admin_reported_users_page.html', reported_users_list = ReportedUserslist)
+            return render_template('admin_reported_users_page.html', reported_users_list = reportedUserslist)

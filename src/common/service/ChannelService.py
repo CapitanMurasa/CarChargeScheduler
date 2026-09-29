@@ -1,24 +1,21 @@
 import Main
-from common.model.Models import db, Users, Channel, ChannelUserCar
+from common.model.Models import db, Users, Channel, UserCar ,ChannelUserCar
 from flask import redirect, request, render_template, session
 from sqlalchemy import text
 
 class ChannelService:
     def __init__(self):
         self.Mainapp = Main.MainApp
-        #self.exec_channel_non_occupied = text('SELECT * FROM channels WHERE occupancy = false ORDER BY id_station ASC')
     def order_station(self):
-        exec_usercars_filtered = text('SELECT * FROM user_cars WHERE id_user = :user_id')
+
         if session.get('username') == '':
             return redirect('/index')
         else:
             channel_list = Channel.query.filter_by(occupancy=False).order_by(Channel.id_station.asc()).all()
-            car_list = db.session.execute(exec_usercars_filtered, {'user_id': session.get('user_id')})
+            car_list = UserCar.query.filter_by(id_user=session.get('user_id')).all()
             if request.method == 'POST':
                 match request.form['button']:
                     case 'Order a station':
-                        #channel_list.close()
-                        car_list.close()
                         markers = request.form.getlist("table")
                         getcar = request.form['Car_selection']
                         for i in markers:
@@ -42,8 +39,6 @@ class ChannelService:
 
                         return redirect('/user/order_station')
                     case 'Release a station':
-                        channel_list.close()
-                        car_list.close()
                         markers = request.form.getlist("table")
                         for i in markers:
                             channel = Channel.query.filter_by(id=i).first()
@@ -57,11 +52,10 @@ class ChannelService:
 
                         return redirect('/user/order_station')
                     case 'show occupied channels by you':
-                        filter_occupied_ch = text("SELECT * FROM channels WHERE occupiedby = :username")
-                        filter_occupied_channels_by_user = db.session.execute(filter_occupied_ch, {'username': session.get('username', '')})
+                        filter_occupied_ch = Channel.query.filter_by(occupiedby=session.get('username', '')).order_by(Channel.id_station.asc())
                         return render_template('user_order_stations_show_occupied_stations.html',
                                                channel=channel_list,
-                                               channel_filtered=filter_occupied_channels_by_user,
+                                               channel_filtered=filter_occupied_ch,
                                                username=session.get('username', ''),
                                                car_list=car_list)
                     case _:
@@ -92,7 +86,9 @@ class ChannelService:
                         else:
                             add_station = Channel(id_station = channel_parrent_station,
                                             title = channel_title,
-                                            price = channel_price)
+                                            price = channel_price,
+                                            occupancy = False,
+                                            occupiedby = None)
                             db.session.add(add_station)
                             db.session.commit()
                             return redirect('/admin/channel_managment')

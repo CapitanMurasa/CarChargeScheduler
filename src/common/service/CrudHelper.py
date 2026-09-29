@@ -1,4 +1,4 @@
-from common.model.Models import Users, Station
+from common.model.Models import Users, Station, Channel
 
 def username_to_id(value):
     user = Users.query.filter_by(username=value).first()
@@ -11,5 +11,9 @@ def id_to_username(value):
 def stationname_to_id(value):
     station = Station.query.filter_by(title=value).first()
     return station.id if station else None
+
+def channelname_to_id(value):
+    channel = Channel.query.filter_by(title=value).first()
+    return channel.id if channel else None
 
 

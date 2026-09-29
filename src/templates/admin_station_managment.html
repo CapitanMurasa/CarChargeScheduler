@@ -11,9 +11,9 @@
     <form action="/admin/station_managment", method="post">
       {% for i in stations%}
       <tr>
-          <td><input type="checkbox" name="table" value="{{ i[0] }}">{{i[1]}}</td>
-          <td>{{i[2]}}</td>
-          <td>{{i[3]}}</td>
+          <td><input type="checkbox" name="table" value="{{ i.id }}">{{i.title}}</td>
+          <td>{{i.addressname}}</td>
+          <td>{{i.channels_per_station}}</td>
       </tr>
       {% endfor %}
       <tr>

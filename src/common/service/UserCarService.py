@@ -7,12 +7,12 @@ from sqlalchemy import text
 class UserCarService:
     def __init__(self):
         self.Mainapp = Main.MainApp
-        self.exec_usercars_individual = text('SELECT * FROM user_cars WHERE id_user = :user_id')
+        #self.exec_usercars_individual = text('SELECT * FROM user_cars WHERE id_user = :user_id')
     def add_car(self):
         if session.get('username') == '':
             return redirect('/index')
         else:
-            channel_usercars_list = db.session.execute(self.exec_usercars_individual, {'user_id': session.get('user_id')})
+            channel_usercars_list = UserCar.query.filter_by(id_user=session.get('user_id')).all()
             if request.method == 'POST':
                 match request.form['button']:
                     case 'add car':
