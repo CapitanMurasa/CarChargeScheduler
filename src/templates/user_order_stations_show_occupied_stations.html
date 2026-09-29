@@ -12,11 +12,10 @@
 </tr>
 <tr>
     {% for i in channel_filtered %}
-        <td><input type="checkbox" name="table" value="{{ i[0] }}">{{i[1]}}</td>
-        <td>{{i[2]}}</td>
-        <td>{{i[3]}}</td>
-        <td>{{i[4]}}</td>
-        <td>{{i[5]}}</td>
+        <td><input type="checkbox" name="table" value="{{ i.id }}">{{i.title}}</td>
+        <td>{{i.price}}</td>
+        <td>{{i.occupancy}}</td>
+        <td>{{i.occupied_by}}</td>
     {% endfor %}
 </tr>
 <tr>

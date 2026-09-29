@@ -5,14 +5,13 @@ from sqlalchemy import text
 
 class StationService:
     def __init__(self):
-        self.exec_station = text('SELECT * FROM stations')
         self.Mainapp = Main.MainApp
 
     def station_managment(self):
         if session.get('username') == '' or session.get('role') != 'admin':
             return redirect('/index')
         else:
-            Station_list = db.session.execute(self.exec_station)
+            Station_list = Station.query.all()
             if request.method == 'POST':
                 match request.form['button']:
                     case 'remove selected rows':

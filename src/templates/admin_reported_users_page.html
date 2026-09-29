@@ -13,11 +13,11 @@
     <form action="/admin/reported_users", method="post">
       {% for i in reported_users_list %}
       <tr>
-          <td><input type="checkbox" name="table" value="{{ i[0] }}">{{ i[1] }}</td>
-          <td>{{i[2]}}</td>
-          <td>{{i[3]}}</td>
-          <td>{{i[4]}}</td>
-          <td>{{i[5]}}</td>
+          <td><input type="checkbox" name="table" value="{{ i.id }}">{{ i.station_id }}</td>
+          <td>{{i.station_address}}</td>
+          <td>{{i.id_channel}}</td>
+          <td>{{i.id_user}}</td>
+          <td>{{i.additional_tip}}</td>
       </tr>
       {% endfor %}
       <tr>

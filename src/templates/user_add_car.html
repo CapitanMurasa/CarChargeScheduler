@@ -9,8 +9,7 @@
     <form action="/user/add_car", method="post">
       {% for i in channel_usercars_list%}
       <tr>
-          <td><input type="checkbox" name="table" value="{{ i[0] }}">{{i[2]}}</td>
-
+          <td><input type="checkbox" name="table" value="{{ i.id }}">{{ i.carname }}</td>
       </tr>
       {% endfor %}
       <tr>

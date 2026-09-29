@@ -18,7 +18,7 @@
         <td>{{i.title}}</td>
         <td>{{i.price}}</td>
         <td>{{i.occupancy}}</td>
-        <td>{{i.occupiedby}}</td>
+        <td>{{i.occupied_by}}</td>
 
       </tr>
       {% endfor %}
@@ -31,7 +31,7 @@
           <td>
             <select name="Car_selection" class="Input">
             {% for item in car_list %}
-                  <option value="{{ item[0] }}">{{ item[2] }}
+                  <option value="{{ item.id }}">{{ item.model }}
             {% endfor %}
             </select>
           </td>

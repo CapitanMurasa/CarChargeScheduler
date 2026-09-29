@@ -6,26 +6,26 @@
     <select name="station_name_select" class="Input">
 
         {% for i in stations_id %}
-        <option value="{{ i[0] }}">{{ i[0] }}</option>
+        <option value="{{ i.id }}">{{ i.id }}</option>
         {% endfor %}
 
     </select>
 
     <select name="station_location_select" class="Input">
         {% for i in stations_address %}
-        <option value="{{ i[0] }}">{{ i[0] }}</option>
+        <option value="{{ i.addressname }}">{{ i.addressname }}</option>
         {% endfor %}
     </select>
 
     <select name="channel_title_select" class="Input">
         {% for i in channel_list %}
-        <option value="{{ i[1] }}">{{ i[1] }}</option>
+        <option value="{{ i.title }}">{{ i.title }}</option>
         {% endfor %}
     </select>
 
     <select name="User_select" class="Input">
         {% for i in user_list %}
-        <option value="{{ i[1] }}">{{ i[1] }}</option>
+        <option value="{{ i.username }}">{{ i.username }}</option>
         {% endfor %}
     </select>
 
