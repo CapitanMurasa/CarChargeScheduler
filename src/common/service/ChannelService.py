@@ -1,5 +1,5 @@
 import Main
-from common.model.Models import db, Users, Channel, ChannelUserCar
+from common.model.Models import db, Users, Channel, UserCar ,ChannelUserCar
 from flask import redirect, request, render_template, session
 from sqlalchemy import text
 
@@ -12,11 +12,10 @@ class ChannelService:
             return redirect('/index')
         else:
             channel_list = Channel.query.filter_by(occupancy=False).order_by(Channel.id_station.asc()).all()
-            car_list = ChannelUserCar.query.filter_by(id_user=session.get('user_id')).all()
+            car_list = UserCar.query.filter_by(id_user=session.get('user_id')).all()
             if request.method == 'POST':
                 match request.form['button']:
                     case 'Order a station':
-                        car_list.close()
                         markers = request.form.getlist("table")
                         getcar = request.form['Car_selection']
                         for i in markers:
@@ -40,8 +39,6 @@ class ChannelService:
 
                         return redirect('/user/order_station')
                     case 'Release a station':
-                        channel_list.close()
-                        car_list.close()
                         markers = request.form.getlist("table")
                         for i in markers:
                             channel = Channel.query.filter_by(id=i).first()
