@@ -118,16 +118,15 @@ class UserService:
                 if request.form['button'] == 'report':
                     station_name = request.form['station_name_select']
                     station_location = request.form['station_location_select']
-                    channel_id = request.form['channel_title_select']
-                    Username = request.form['User_select']
+                    channel_id = Crudhelper.channelname_to_id(request.form['channel_title_select'])
+                    user_id = Crudhelper.username_to_id(request.form['User_select'])
                     additional_tip = request.form['textfeild']
-                    Username_id_selected = Crudhelper.username_to_id(Username)
 
                     report = ReportedUsersList(
                         id_station = station_name,
                         station_address = station_location,
                         id_channel = channel_id,
-                        id_user = Username_id_selected,
+                        id_user = user_id,
                         additional_tip = additional_tip
                     )
 
