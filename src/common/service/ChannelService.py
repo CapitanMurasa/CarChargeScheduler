@@ -86,7 +86,9 @@ class ChannelService:
                         else:
                             add_station = Channel(id_station = channel_parrent_station,
                                             title = channel_title,
-                                            price = channel_price)
+                                            price = channel_price,
+                                            occupancy = False,
+                                            occupiedby = None)
                             db.session.add(add_station)
                             db.session.commit()
                             return redirect('/admin/channel_managment')
