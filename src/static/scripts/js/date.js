@@ -6,6 +6,5 @@ function ReturnTodayDate(){
     localDate.setMinutes(localDate.getMinutes() - localDate.getTimezoneOffset());
     return localDate.toISOString().slice(0, 19);
 }
-
 dateBookPickerId.min = ReturnTodayDate();
 dateDuePickerId.min = ReturnTodayDate();
