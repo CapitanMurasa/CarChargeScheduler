@@ -100,6 +100,7 @@ class ChannelService:
                     case 'Release a station':
                         markers = request.form.getlist("table")
                         for i in markers:
+                            ChannelUserCar.query.filter_by(id_channel=i, id_user=session.get('user_id', '')).delete()
                             channel = Channel.query.filter_by(id=i).first()
                             channel.occupancy = False
                             channel.occupiedby = None
