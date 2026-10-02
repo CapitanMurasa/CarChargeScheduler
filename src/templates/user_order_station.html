@@ -27,8 +27,6 @@
               <th scope="col">Station ID</th>
               <th scope="col">Title of Channel</th>
               <th scope="col">Price</th>
-              <th scope="col">Occupancy</th>
-              <th scope="col">Occupied By</th>
             </tr>
           </thead>
           <tbody>
@@ -44,10 +42,6 @@
               </td>
               <td class="fw-semibold text-dark">{{ i.title }}</td>
               <td>{{ i.price }}</td>
-              <td>{{ i.occupancy }}</td>
-              <td class="text-muted small">
-                {{ i.occupied_by if i.occupied_by else "—" }}
-              </td>
             </tr>
             {% else %}
             <tr>
@@ -73,8 +67,14 @@
           </select>
         </div>
 
+        <label for="carSelection" class="form-label mb-0 fw-semibold text-secondary small text-nowrap">
+            book date:
+        </label>
         <input type="datetime-local" id="dateBookPicker" name="BookDate">
-        
+
+        <label for="carSelection" class="form-label mb-0 fw-semibold text-secondary small text-nowrap">
+            book due:
+        </label>
         <input type="datetime-local" id="dateDuePicker" name="DueDate">
         
         <button type="submit" name="button" value="Order a station" class="btn btn-primary btn-sm px-4">

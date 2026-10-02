@@ -18,8 +18,8 @@
           <th scope="col">Station ID</th>
           <th scope="col">Title of Channel</th>
           <th scope="col">Price</th>
-          <th scope="col">Occupancy</th>
-          <th scope="col">Occupied By</th>
+          <th scope="col">Schedule time</th>
+          <th scope="col">Scheduled due</th>
         </tr>
       </thead>
       <tbody>
@@ -35,10 +35,6 @@
           </td>
           <td class="fw-semibold text-dark">{{ i.title }}</td>
           <td>{{ i.price }}</td>
-          <td>{{ i.occupancy }}</td>
-          <td class="text-muted small">
-            {{ i.occupied_by if i.occupied_by else "—" }}
-          </td>
         </tr>
         {% else %}
         <tr>
