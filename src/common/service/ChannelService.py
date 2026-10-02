@@ -1,5 +1,6 @@
 import Main
 from common.model.Models import db, Users, Channel, UserCar ,ChannelUserCar
+from common.service.CrudHelper import str_to_datetime, id_to_username
 from flask import redirect, request, render_template, session
 from sqlalchemy import text
 
@@ -18,6 +19,8 @@ class ChannelService:
                     case 'Order a station':
                         markers = request.form.getlist("table")
                         getcar = request.form['Car_selection']
+                        book_date = str_to_datetime(request.form['BookDate'])
+                        due_date = str_to_datetime(request.form['DueDate'])
                         for i in markers:
                             channel = Channel.query.filter_by(id=i).first()
                             channel_usercars = ChannelUserCar.query.filter_by(id_channel=i, id_user=session.get('user_id')).first()
@@ -26,7 +29,9 @@ class ChannelService:
                                         channel_usercars.id_user_car is None):
                                     add_to_channel_user_car = ChannelUserCar (id_channel = i,
                                                                             id_user = session.get('user_id'),
-                                                                            id_user_car = getcar)
+                                                                            id_user_car = getcar,
+                                                                            startcharge = book_date,
+                                                                            endcharge = due_date)
                                     db.session.add(add_to_channel_user_car)
                                 else:
                                     channel_usercars.id_user_car = int(getcar)
@@ -41,23 +46,23 @@ class ChannelService:
                     case 'Release a station':
                         markers = request.form.getlist("table")
                         for i in markers:
-                            channel = Channel.query.filter_by(id=i).first()
-                            if channel.occupiedby == session.get('username', ''):
-                                ChannelUserCar.query.filter_by(id_channel=i, id_user=session.get('user_id')).delete()
-                                channel.occupancy = False
-                                channel.occupiedby = None
+                            Filter_channel = ChannelUserCar.query.filter_by(id_channel=i).first()
+                            if Filter_channel.channel.occupiedby == session.get('username', ''):
+                                ChannelUserCar.query.filter_by(id_channel=i, id_user=session.get('user_id', '')).delete()
+                                Filter_channel.channel.occupancy = False
+                                Filter_channel.channel.occupiedby = None
                                 db.session.commit()
                             else:
                                 return "You can't release station, which you didn't occupied!"
 
                         return redirect('/user/order_station')
                     case 'show occupied channels by you':
-                        filter_occupied_ch = Channel.query.filter_by(occupiedby=session.get('username', '')).order_by(Channel.id_station.asc())
+                        channelUserCar_occupied = ChannelUserCar.query.filter_by(id_user=session.get('user_id', '')).all()
                         return render_template('user_order_stations_show_occupied_stations.html',
                                                channel=channel_list,
-                                               channel_filtered=filter_occupied_ch,
-                                               username=session.get('username', ''),
-                                               car_list=car_list)
+                                               channel_filtered=channelUserCar_occupied,
+                                               car_list=car_list,
+                                               username=session.get('username', ''))
                     case _:
                         return str(request.form['button'])
             else:
@@ -95,6 +100,7 @@ class ChannelService:
                     case 'Release a station':
                         markers = request.form.getlist("table")
                         for i in markers:
+                            ChannelUserCar.query.filter_by(id_channel=i, id_user=session.get('user_id', '')).delete()
                             channel = Channel.query.filter_by(id=i).first()
                             channel.occupancy = False
                             channel.occupiedby = None

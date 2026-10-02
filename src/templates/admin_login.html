@@ -3,7 +3,7 @@
 <html>
     {% block head %}
     <head>
-        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/css/bootstrap.css') }}">
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/vendor/bootstrap.css') }}">
 
         <title>Car Charge Schedule</title>
     </head>
@@ -23,7 +23,7 @@
                 </div>
             </form>
         {% endblock %}
-        <script src="{{ url_for('static',filename='scripts/js/bootstrap.js') }}"></script>
+        <script src="{{ url_for('static',filename='scripts/js/vendor/bootstrap.js') }}"></script>
 
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
     </body>

@@ -1,42 +1,95 @@
 {% extends "user_index.html" %}
 
 {% block content %}
+<div class="container my-4">
+  <form action="/user/order_station" method="post">
+    
+    
+    <div class="card shadow-sm border-0 mb-4">
+      
+      <div class="card-header bg-white py-3 d-flex flex-wrap justify-content-between align-items-center gap-2 border-bottom">
+        <h5 class="mb-0 fw-semibold text-secondary">Available Charging Channels</h5>
+        <div class="d-flex gap-2">
+          <button type="submit" name="button" value="sort channel price" class="btn btn-outline-secondary btn-sm px-3">
+            Sort Channel Price
+          </button>
+          <button type="submit" name="button" value="show occupied channels by you" class="btn btn-outline-primary btn-sm px-3">
+            Show Occupied Channels By You
+          </button>
+        </div>
+      </div>
 
-<table>
-    <form action="/user/order_station", method="post">
-    <tr>
-        <th>station id</th>
-        <th>title of the channel</th>
-        <th><input type="button" name="button" value="sort channel price"></th>
-        <th>Channel occupancy</th>
-        <th>Occupied by</th>
-        <th>Select car which will be charged</th>
-    </tr>
-      {% for i in channel %}
-      <tr>
-        <td><input type="checkbox" name="table" value="{{ i.id }}">{{i.id_station}}</td>
-        <td>{{i.title}}</td>
-        <td>{{i.price}}</td>
-        <td>{{i.occupancy}}</td>
-        <td>{{i.occupied_by}}</td>
-
-      </tr>
-      {% endfor %}
-      <tr>
-          <td><input type="submit" name="button" value="Order a station"></td>
-          <td><input type="submit" name="button" value="show occupied channels by you"></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td>
-            <select name="Car_selection" class="Input">
-            {% for item in car_list %}
-                  <option value="{{ item.id }}">{{ item.carname }}</option>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th scope="col" style="width: 45px;" class="text-center">Select</th>
+              <th scope="col">Station ID</th>
+              <th scope="col">Title of Channel</th>
+              <th scope="col">Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in channel %}
+            <tr>
+              <td class="text-center">
+                <input class="form-check-input" type="checkbox" name="table" value="{{ i.id }}">
+              </td>
+              <td>
+                <span class="badge bg-secondary-subtle text-secondary-emphasis border">
+                  #{{ i.id_station }}
+                </span>
+              </td>
+              <td class="fw-semibold text-dark">{{ i.title }}</td>
+              <td>{{ i.price }}</td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="6" class="text-center py-4 text-muted">
+                No channels available.
+              </td>
+            </tr>
             {% endfor %}
-            </select>
-          </td>
-          <div id="user_order_station_occupied">{% block user_order_station_occupied %}{% endblock %}</div>
-      </tr>
+          </tbody>
+        </table>
+      </div>
+
+      
+      <div class="card-footer bg-white py-3 d-flex flex-wrap justify-content-between align-items-center gap-3 border-top">
+        <div class="d-flex align-items-center gap-2">
+          <label for="carSelection" class="form-label mb-0 fw-semibold text-secondary small text-nowrap">
+            Select Car:
+          </label>
+          <select name="Car_selection" id="carSelection" class="form-select form-select-sm" style="min-width: 220px;">
+            {% for item in car_list %}
+              <option value="{{ item.id }}">{{ item.carname }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <label for="carSelection" class="form-label mb-0 fw-semibold text-secondary small text-nowrap">
+            book date:
+        </label>
+        <input type="datetime-local" id="dateBookPicker" name="BookDate">
+
+        <label for="carSelection" class="form-label mb-0 fw-semibold text-secondary small text-nowrap">
+            book due:
+        </label>
+        <input type="datetime-local" id="dateDuePicker" name="DueDate">
+        
+        <button type="submit" name="button" value="Order a station" class="btn btn-primary btn-sm px-4">
+          Order a Station
+        </button>
+      </div>
+
+    </div>
+
+    
+    <div id="user_order_station_occupied">
+      {% block user_order_station_occupied %}{% endblock %}
+    </div>
+
   </form>
-</table>
+  <script src="{{ url_for('static', filename='scripts/js/date.js') }}"></script>
+</div>
 {% endblock %}
