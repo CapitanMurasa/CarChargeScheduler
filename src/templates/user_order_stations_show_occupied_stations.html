@@ -26,15 +26,17 @@
         {% for i in channel_filtered %}
         <tr>
           <td class="text-center">
-            <input class="form-check-input" type="checkbox" name="table" value="{{ i.id }}">
+            <input class="form-check-input" type="checkbox" name="table" value="{{ i.id_channel }}">
           </td>
           <td>
             <span class="badge bg-secondary-subtle text-secondary-emphasis border">
-              #{{ i.id_station }}
+              #{{ i.channel.id_station }}
             </span>
           </td>
-          <td class="fw-semibold text-dark">{{ i.title }}</td>
-          <td>{{ i.price }}</td>
+          <td class="fw-semibold text-dark">{{ i.channel.title }}</td>
+          <td>{{ i.channel.price }}</td>
+          <td>{{ i.startcharge }}</td>
+          <td>{{ i.endcharge }}</td>
         </tr>
         {% else %}
         <tr>

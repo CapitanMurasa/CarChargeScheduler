@@ -29,6 +29,7 @@ class ChannelUserCar(db.Model):
     id_user_car = db.Column(db.Integer, db.ForeignKey('user_cars.id'), nullable = False)
     startcharge = db.Column(db.DateTime, unique = False, nullable = False)
     endcharge = db.Column(db.DateTime, unique = False, nullable = False)
+    channel = db.relationship('Channel', backref='user_bookings')
 
 class Channel(db.Model):
     __tablename__ = 'channels'
