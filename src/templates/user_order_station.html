@@ -2,7 +2,6 @@
 
 {% block content %}
 <div class="container my-4">
-  <script src="{{ url_for('static', filename='scripts/js/date.js') }}"></script>
   <form action="/user/order_station" method="post">
     
     
@@ -75,7 +74,7 @@
         </div>
 
         <input type="datetime-local" id="dateBookPicker" name="Booktime">
-        <input type="time" name="duedate">
+        <input type="datetime-local" id="dateDuePicker" name="Duetime">
         
         <button type="submit" name="button" value="Order a station" class="btn btn-primary btn-sm px-4">
           Order a Station
@@ -90,5 +89,6 @@
     </div>
 
   </form>
+  <script src="{{ url_for('static', filename='scripts/js/date.js') }}"></script>
 </div>
 {% endblock %}
