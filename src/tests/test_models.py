@@ -22,5 +22,11 @@ def test_encrypt_user_password(test_client):
 
     fetched_user = Users.query.filter_by(username="ci_cd_tester_2").first()
 
+    assert fetched_user is not None
+
     assert fetched_user.password == password_encrypted
-    assert check_password_hash(fetched_user.password) == password
+    assert check_password_hash(fetched_user.password, password)
+
+    assert not check_password_hash(fetched_user.password, "Hel1o")
+
+
