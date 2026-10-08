@@ -16,7 +16,7 @@ CREATE TABLE user_cars (
 CREATE TABLE stations (
     id SERIAL PRIMARY KEY,
     title TEXT NOT NULL,
-    addressname TEXT NOT NULL,
+    addressname TEXT UNIQUE NOT NULL,
     channels_per_station INTEGER DEFAULT 0
 );
 

@@ -12,7 +12,7 @@ class Station(db.Model):
     __tablename__ = 'stations'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), unique=False, nullable=False)
-    addressname = db.Column(db.String(200), unique=False, nullable=False)
+    addressname = db.Column(db.String(200), unique=True, nullable=False)
     channels_per_station = db.Column(db.Integer, unique=False, nullable=False)
 
 class UserCar(db.Model):
