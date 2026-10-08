@@ -16,7 +16,7 @@ services:
   web:
     build: .
     volumes:
-      - .:src/
+      - .:/src/
     env_file:
       - .env
     container_name: ccs_web
